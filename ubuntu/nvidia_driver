@@ -1,0 +1,9 @@
+FROM ubuntu:latest
+
+ARG NVIDIA_DRIVER_VERSION=470
+
+LABEL description="Ubuntu image with nvidia-dirver-${NVIDIA_DRIVER_VERSION}"
+
+RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        nvidia-driver-${NVIDIA_DRIVER_VERSION} \
+    && rm -rf /var/lib/apt/lists/*

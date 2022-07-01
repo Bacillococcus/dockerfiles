@@ -1,0 +1,61 @@
+ARG BASE_IMAGE
+
+FROM ${BASE_IMAGE}
+
+ARG NVIDIA_DRIVER_VERSION=470
+
+LABEL description="Ubuntu image + steam with necessary nvidia drivers"
+
+ADD https://cdn.cloudflare.steamstatic.com/client/installer/steam.deb /steam.deb
+RUN dpkg --add-architecture i386
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    /steam.deb \
+    libgl1-mesa-dri:i386 \
+    libgl1:i386 \
+    libc6:i386 \
+    xdg-desktop-portal \
+    xdg-desktop-portal-gtk \
+    libglvnd0 \
+    libgl1 \
+    libglx0 \
+    libegl1 \
+    libxext6 \
+    libx11-6 \
+    glmark2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Steam always ask about this packages even though some games run fine without it
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libc6:amd64 \
+    libc6:i386 \
+    libegl1:amd64 \
+    libegl1:i386 \
+    libgbm1:amd64 \
+    libgbm1:i386 \
+    libgl1-mesa-dri:amd64 \
+    libgl1-mesa-dri:i386 \
+    libgl1:amd64 \
+    libgl1:i386 \
+    libnvidia-gl-${NVIDIA_DRIVER_VERSION}:i386 \
+    steam-libs-amd64:amd64 \
+    steam-libs-i386:i386 \
+    && rm -rf /var/lib/apt/lists/*
+
+
+# Create user for to be use without root
+# replace 1000 with your user / group id
+RUN export uid=1000 gid=1000 && \
+    mkdir -p /home/developer && \
+    echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
+    echo "developer:x:${uid}:" >> /etc/group && \
+    mkdir -p /etc/sudoers.d && \
+    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
+    chmod 0440 /etc/sudoers.d/developer && \
+    chown ${uid}:${gid} -R /home/developer
+
+ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
+
+USER developer
+ENV HOME /home/developer
+USER developer
