@@ -1,0 +1,70 @@
+ARG BASE_IMAGE
+
+FROM ${BASE_IMAGE}
+
+ARG NVIDIA_DRIVER_VERSION=470
+
+LABEL description="Ubuntu image + pycharm with necessary nvidia drivers"
+
+# necessary dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libxext6 \
+    libxrender1 \
+    libxtst6 \
+    libxi6 \
+    libfreetype6\
+    libxft2 \
+    libglib2.0-0 \
+    libnss3 \
+    libxrandr2 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libx11-xcb1 \
+    libxcb-dri3-0 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libdrm2 \
+    libgbm1 \
+    libasound2 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libcups2 \
+    libxss1 \
+    libglvnd0 \
+    libgl1 \
+    libglx0 \
+    libegl1 \
+    libxkbcommon0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# locales for support other languages and other tools
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    locales \
+    fonts-noto \
+    python3-pip \
+    git \
+    wget \
+    curl \
+    bash-completion \
+    && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+    && rm -rf /var/lib/apt/lists/* \
+ENV LANG en_US.utf8
+
+# Replace 1000 with your user / group id
+RUN export uid=1000 gid=1000 && \
+    mkdir -p /home/developer && \
+    echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
+    echo "developer:x:${uid}:" >> /etc/group && \
+    mkdir -p /etc/sudoers.d/ && \
+    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
+    chmod 0440 /etc/sudoers.d/developer && \
+    chown ${uid}:${gid} -R /home/developer
+
+ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
+
+USER developer
+ENV HOME /home/developer
+USER developer
+
+ENTRYPOINT bash
