@@ -14,7 +14,7 @@ on:
 env:
   REGISTRY: ghcr.io
   REPO_NAME: ${{ github.repository }}
-  NVIDIA_DRIVER_VERSION: 470
+  NVIDIA_DRIVER_VERSION: 515
 
 jobs:
   build-and-push-ubuntu-nvidia-driver-image:
