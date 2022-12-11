@@ -6,6 +6,8 @@
 
 # How to use
 
+## ubuntu/nvidia*
+
 For a container with graphics and audio do the following steps, we use steam as an example in this case.
 
 To be able to connect with x11 and pulseaudio server for audio and graphics, we need to share x11 and pulseaudio socket.
@@ -67,3 +69,7 @@ Explaining each arguments:
 There's some caveats since you are sharing x11 and pulseaudio server applications inside this container will be able to access to your mic and other GUI apps meaning it can still read your clipboard and grab your screen or record your mic. This might be good and bad for some user, since you can pretty seamlessly use this as if it is applications on your host (well a part from file sharing and other things),but this is still a good trade off between having steam directly on your system since that would make it hard to move around between system and steam itself have access to files on your system.
 
 The container itself build up and using a user with id of `1000:1000` so you might need to make sure that the folder or anything that was mount to the container you got enough permission to operate on those.
+
+## ubuntu/openssh-server
+
+
