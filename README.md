@@ -70,6 +70,8 @@ There's some caveats since you are sharing x11 and pulseaudio server application
 
 The container itself build up and using a user with id of `1000:1000` so you might need to make sure that the folder or anything that was mount to the container you got enough permission to operate on those.
 
+There is also a problem with `/dev/snd/seq` missing in container sometimes after resume from suspended system.
+
 ## ubuntu/openssh-server
 
 
