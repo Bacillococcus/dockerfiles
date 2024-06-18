@@ -15,6 +15,7 @@ env:
   REGISTRY: ghcr.io
   REPO_NAME: ${{ github.repository }}
   NVIDIA_DRIVER_VERSION: 535
+  UBUNTU_TAG: jammy
 
 jobs:
   build-and-push-ubuntu-nvidia-driver-image:
@@ -52,7 +53,8 @@ jobs:
           tags: |
             ${{ steps.meta.outputs.tags }}
           build-args: |
-            "NVIDIA_DRIVER_VERSION=${{ env.NVIDIA_DRIVER_VERSION }}"
+            NVIDIA_DRIVER_VERSION=${{ env.NVIDIA_DRIVER_VERSION }}
+            UBUNTU_TAG=${{ env.UBUNTU_TAG}}
           labels: ${{ steps.meta.outputs.labels }}
 
   build-and-push-ubuntu-nvidia-driver-steam-image:
@@ -180,4 +182,6 @@ jobs:
           file: ubuntu/openssh_server
           tags: |
             ${{ steps.meta.outputs.tags }}
+          build-args: |
+            UBUNTU_TAG=${{ env.UBUNTU_TAG}}
           labels: ${{ steps.meta.outputs.labels }}

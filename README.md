@@ -74,4 +74,5 @@ There is also a problem with `/dev/snd/seq` missing in container sometimes after
 
 ## ubuntu/openssh-server
 
+Mostly use to run ssh inside docker instead of host.
 

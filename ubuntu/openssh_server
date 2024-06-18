@@ -1,4 +1,5 @@
-FROM ubuntu:latest
+ARG UBUNTU_TAG=latest
+FROM ubuntu:${UBUNTU_TAG}
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM xterm-256color
