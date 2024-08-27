@@ -1,0 +1,18 @@
+FROM ubuntu:jammy
+
+RUN apt-get update && apt-get -y upgrade && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+        nvidia-driver-535 \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN --mount=target=/tmp/debs,type=bind,source=./debs \
+    apt-get update && apt-get -y upgrade && \
+    cp /tmp/debs/cuda-ubuntu2204.pin /etc/apt/preferences.d/cuda-repository-pin-600 && \
+    apt-get install -y \
+        /tmp/debs/cuda-repo-ubuntu2204-12-2-local_12.2.2-535.104.05-1_amd64.deb && \
+    cp /var/cuda-repo-ubuntu2204-12-2-local/cuda-*-keyring.gpg /usr/share/keyrings/ && \
+    apt-get install -y /tmp/debs/cudnn-local-repo-ubuntu2204-9.3.0_1.0-1_amd64.deb && \
+    cp /var/cudnn-local-repo-ubuntu2204-9.3.0/cudnn-*-keyring.gpg /usr/share/keyrings/ && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive  apt-get install -y cuda cudnn-cuda-12 && \
+    apt-get remove -y cuda-repo-ubuntu2204-12-2-local cudnn-local-repo-ubuntu2204-9.3.0 && \
+    rm -rf /var/lib/apt/lists/*
